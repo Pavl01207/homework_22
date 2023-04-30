@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="style.css">
+	<title>Task 1</title>
+</head>
+<body>
+	<div class="main"></div>
+	<script>
+	//Клас Client
+	//--Властивості
+	//-----ID
+	//-----ПІБ
+	//-----Кількість грошей на рахунку
+	//--Методи
+	//------Додавання грошей
+	//------Зняття грошей
+	//------ToString
+	class Client{
+		constructor(userId,userName,userBalance){
+			this.userId = userId
+			this.userName = userName
+			this.userBalance = userBalance
+		}
+		addToBalance(value){
+			this.userBalance+=value
+		}
+		withdrawFromBalance(value){
+			if((this.userBalance - value) < 0) alert('Недостатньо коштів на рахунку')
+			else this.userBalance-=value
+		}
+		toString(){
+			return `<br>Клієнт <span>${this.userName}</span>, залишок: <span>${this.userBalance}$</span>.`
+		}
+	}
+	const mainClientList = []
+	let simpleUser1 = new Client(89210,'Pavlo Palahniuk',10000)
+	mainClientList.push(simpleUser1)
+	let simpleUser2 = new Client(67891,'John Smeet',9000)
+	mainClientList.push(simpleUser2)
+	let simpleUser3 = new Client(5432,'Oleksandr Din',7000)
+	mainClientList.push(simpleUser3)
+	let simpleUser4 = new Client(1095,'Salma York',12000)
+	mainClientList.push(simpleUser4)
+	let simpleUser5 = new Client(7623,'Ivan Cant',11000)
+	mainClientList.push(simpleUser5)
+	simpleUser1.toString()
+	//клас GoldenClient
+	//--Властивості
+	//-----ID
+	//-----ПІБ
+	//-----Кількість грошей на рахунку
+	//-----Ліміт кредитних коштів
+   //-----Відсоток за використання кредитних коштів
+	//--Методи
+	//------Додавання грошей
+	//------Зняття грошей
+	//------Визначення пені за використання кредитних коштів
+	//------ToString
+	class GoldenClient extends Client{
+		constructor(userId,userName,userBalance,userCreditLimit,userCreditPercent){
+			super(userId,userName,userBalance)
+			this.userCreditLimit = userCreditLimit
+			this.userCreditPercent = userCreditPercent
+		}
+		getFine(){
+			return this.userCreditLimit/100 * this.userCreditPercent
+		}
+		toString(){
+			return `<br>Клієнт: <span>${this.userName}</span>, баланс: <span>${this.userBalance}$</span>, 
+				пеня по кредитній ставці: <span>${this.getFine()}$</span>.`
+		}
+	}
+	let goldenUser1 = new GoldenClient(99210,'Palahniuk Kate',15000,5000,5)
+	mainClientList.push(goldenUser1)
+	let goldenUser2 = new GoldenClient(99210,'Adam Koin',25000,10000,7)
+	mainClientList.push(goldenUser2)
+	//Клас Bank
+	//--Властивості
+	//------масив клієнтів
+	//--Методи
+	//------вивести усіх простих клієнтів
+	//------вивести усіх клієнтів GoldenClient
+	//------знати сумарну кількість грошей на рахунку
+	class Bank{
+		constructor(clientList){
+			this.clientList = clientList
+		}
+		getCategoryClient(){
+			let arr1 = []
+			let arr2 = []
+			for(const client of this.clientList){
+				if(client instanceof GoldenClient) arr1.push(client)
+				else arr2.push(client)
+			}
+			return {arr1,arr2}
+		}
+		getTotalValue(){
+			let total = 0
+			for(const client of this.clientList){
+				total+=client.userBalance
+			}
+			return total
+		}
+		render(targetSelector){
+			const mainContainer = document.querySelector(targetSelector)
+			//
+			const mainListClient = this.getCategoryClient()
+			//
+			const goldenClient = document.createElement('p')
+			goldenClient.innerHTML = mainListClient.arr1
+			mainContainer.append(goldenClient)
+			//
+			const simpleClient = document.createElement('p')
+			simpleClient.innerHTML = mainListClient.arr2
+			mainContainer.append(simpleClient)
+			//
+			const totalValue = document.createElement('p')
+			totalValue.innerHTML = `Загальна кількість грошей: <span>${this.getTotalValue()}$<span>`
+			mainContainer.append(totalValue)
+		}
+	}
+	let bank = new Bank(mainClientList)
+	bank.render('.main')
+	console.log(bank.getTotalValue())
+	</script>
+</body>
+</html>

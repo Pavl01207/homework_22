@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Task 2</title>
+</head>
+<body>
+	<style>
+		body{
+			background-color: #d8e2dc;
+		}
+	</style>
+	<div class="container"></div>
+	<script>
+		//Клас предок Picture
+		//--Властивості
+		//------кординати Х
+		//------координати У
+		//------шлях до зоображення
+		//------інтервал оновлення
+		//--Методи
+		//------генерування елемента розмітки
+		class Picture{
+			constructor(coordX,coordY,imgSrc,intTime){
+				this.coordX = coordX
+				this.coordY = coordY
+				this.imgSrc = imgSrc
+				this.intTime = intTime
+			}
+			render(targetSelector){
+				const mainContainer = document.querySelector(targetSelector)
+				mainContainer.style.position = 'relative'
+				//
+				this.img = document.createElement('img')
+				this.img.src = this.imgSrc
+				this.img.style.position = 'absolute'
+				this.img.style.top = this.coordY + 'px'
+				this.img.style.left = this.coordX + 'px'
+				mainContainer.append(this.img)
+			}
+		}
+		//Клас House
+		//--Метод
+		//-----оновлення через вказаний інтервал(збільшення або зменшення масштабу,об'єкт не рухається)
+		class House extends Picture{
+			changeScale(){
+				setInterval((
+					()=>{
+						this.img.style.transform = 'scale(1.05)'
+					}),this.intTime * 1000
+				)
+				this.defaultSize()
+			}
+			defaultSize(){
+				setInterval((
+					() =>{
+						this.img.style.transform = 'scale(1)'
+					}),(this.intTime + 2) * 1000
+				)
+			}
+		}
+		let house = new House(900,100,'house.png',1)
+		house.render('.container')
+		house.changeScale()
+		//Клас Dog
+		//--Метод
+		//-----оновлення через вказаний інтервал(випадкове зміщення по горизонталі(зміна координат Х))
+		class Dog extends Picture{
+			changeMove(){
+				setInterval((
+					() => {
+						this.img.style.left = parseInt(this.img.style.left) + 5 + 'px'
+					}),this.intTime * 100
+				)
+			}
+		}
+		let dog = new Dog(100,250,'dog.png',2)
+		dog.render('.container')
+		dog.changeMove()
+		//Клас Bird
+		//--Метод
+		//-----оновлення через вказаний інтервал(випадкове переміщення у довільному напрямку)
+		class Bird extends Picture{
+			getRandomNumber(min,max){
+				return min+Math.floor(Math.random()*(max-min+1))
+			}
+			changePosition(){
+				setInterval((
+					() => {
+						//this.img.style.bottom = parseInt(this.img.style.bottom) + this.getRandomNumber(0,3) + 'px'
+						this.img.style.top = parseInt(this.img.style.top) + this.getRandomNumber(0,3) + 'px'
+						this.img.style.left = parseInt(this.img.style.left) + this.getRandomNumber(0,3) + 'px'
+						this.img.style.top = parseInt(this.img.style.top) - this.getRandomNumber(0,3) + 'px'
+					}
+				),this.intTime * 100)
+			}
+		}
+		let bird = new Bird(50,50,'bird.png',1)
+		bird.render('.container')
+		bird.changePosition()
+	</script>
+</body>
+</html>
